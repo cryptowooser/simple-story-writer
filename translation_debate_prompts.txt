@@ -1,0 +1,29 @@
+    def affirmative_response(self, translation: str, source_text: str, src_lang: str, tgt_lang: str) -> str:
+        """Generate affirmative agent response defending the translation."""
+        player_meta = f"""You are a debater participating in a translation debate competition. Welcome to this constructive and thoughtful debate. It is entirely appropriate to offer different perspectives, as our shared objective is to discover the most accurate and natural translation. The debate topic is: What is the appropriate {tgt_lang} translation of the following {src_lang} text: "{source_text}" """
+        
+        affirmative_prompt = f"""You believe the correct translation is: {translation}. Please restate your translation and explain your reasoning."""
+        
+        full_prompt = player_meta + "\n\n" + affirmative_prompt
+        
+        return self._call_model(full_prompt, "affirmative_agent", self._sample_counters, self._interaction_log)
+    
+    def negative_response(self, affirmative_answer: str, source_text: str, src_lang: str, tgt_lang: str) -> str:
+        """Generate negative agent response critiquing the translation."""
+        player_meta = f"""You are a debater participating in a translation debate competition. Welcome to this constructive and thoughtful debate. It is entirely appropriate to offer different perspectives, as our shared objective is to discover the most accurate and natural translation. The debate topic is: What is the appropriate {tgt_lang} translation of the following {src_lang} text: "{source_text}" """
+        
+        negative_prompt = f"""{affirmative_answer} You have a different interpretation of the translation. Please provide your version and explain your reasoning."""
+        
+        full_prompt = player_meta + "\n\n" + negative_prompt
+        
+        return self._call_model(full_prompt, "negative_agent", self._sample_counters, self._interaction_log)
+    
+    def moderator_decision(self, round_num: str, affirmative_answer: str, negative_answer: str, source_text: str, src_lang: str, tgt_lang: str) -> Dict[str, Any]:
+        """Generate moderator decision for the round."""
+        moderator_meta = f"""You are acting as both a moderator and a linguistics expert. In this translation debate, two debaters will present their proposed translations and explain their reasoning regarding the correct {tgt_lang} version of the given {src_lang} text: "{source_text}". At the conclusion of each round, your role is to evaluate the translations based on: 1. Accuracy; 2. Fluency; 3. Grammar & Syntax; 4. Lexical Choice; 5. Sentence Structure & Voice."""
+        
+        moderator_prompt = f"""The {round_num} round has concluded. Affirmative side presented: {affirmative_answer}. Negative side presented: {negative_answer}. As a linguist and the moderator, evaluate both and select only one final {tgt_lang} translation. If both are equally good, choose one or slightly revise one of them to produce the final result, but do not merge. Strictly output only one {tgt_lang} translation. Do not include Romaji, alternatives, or explanations. Return this JSON format: {{"Whether there is a preference": "Yes or No", "Supported Side": "Affirmative or Negative", "Reason": "", "debate_translation": ""}}."""
+        
+        full_prompt = moderator_meta + "\n\n" + moderator_prompt
+        
+        response = self._call_model(full_prompt, "moderator_agent", self._sample_counters, self._interaction_log)

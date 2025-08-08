@@ -1,0 +1,28 @@
+{
+  "total_prompt_tokens": 89518,
+  "total_completion_tokens": 41989,
+  "total_tokens": 131507,
+  "api_calls": 19,
+  "by_agent": {
+    "outline_generator": {
+      "prompt_tokens": 695,
+      "completion_tokens": 573,
+      "calls": 1
+    },
+    "affirmative_writer": {
+      "prompt_tokens": 24989,
+      "completion_tokens": 8471,
+      "calls": 6
+    },
+    "negative_critic": {
+      "prompt_tokens": 33682,
+      "completion_tokens": 19992,
+      "calls": 6
+    },
+    "judge_editor": {
+      "prompt_tokens": 30152,
+      "completion_tokens": 12953,
+      "calls": 6
+    }
+  }
+}
